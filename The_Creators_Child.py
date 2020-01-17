@@ -42,7 +42,7 @@ def sortScore(val):
     return val.score
     
 def parseComment(comment):
-    step1 = re.search(r'!([a-z]*)(( ?\+ ?)([a-z]*))+!', comment.body, re.I)
+    step1 = re.search(r'!([a-zA-Z]*)(( *\+ *)([a-zA-Z]*))+!', comment.body, re.I)
     if step1:
         step2 = step1.group()[1:-1]
         step3 = re.split(r' ?\+ ?', step2, 0, re.I)
@@ -72,7 +72,7 @@ def updateAlchemy():
         react.sort()
         exp = ""
         for n in react:
-            if n in _resources:
+            if n.lower() in _resources:
                 exp += n
             else:
                 exp += '!ERROR!'
@@ -83,13 +83,17 @@ def updateAlchemy():
             react5 += '\n\nu/' + piece.author.name + "'s reaction was a failure."
     react5 += '\n\n*See comments for more details.*'
     post.edit(react5)
+    
 def updateBasic():
     pass
 
 def switch():
     p = subreddit.submit('Switch cycles?', selftext='', send_replies=False)
-    p.reply('Yes')
-    p.reply('No')
+    p.clear_vote()
+    y = p.reply('Yes')
+    y.clear_vote()
+    n = p.reply('No')
+    n.clear_vote()
     p.mod.lock()
 
 def update(cycle):
@@ -127,7 +131,8 @@ def post(cycle, selfText):
     t = time.strftime(cycstr + ' %a, %d %b 20%y', time.localtime())
     st = selfText
     fid = None
-    subreddit.submit(t, selftext=st, flair_id=fid, send_replies=False)
+    s = subreddit.submit(t, selftext=st, flair_id=fid, send_replies=False)
+    s.clear_vote()
 
 def readPost(post, cycle):
     if (post.author.id == '97b31x8' or post.author.id == '3hpqioem') and re.fullmatch("next", submission.title, re.IGNORECASE):
