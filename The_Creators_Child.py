@@ -73,7 +73,7 @@ def updateAlchemy():
         exp = ""
         for n in react:
             if n.lower() in _resources:
-                exp += n
+                exp += n.lower()
             else:
                 exp += '!ERROR!'
         if exp in REACTIONS:
